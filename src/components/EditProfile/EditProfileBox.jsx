@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Card,
   InputGroup,
@@ -17,9 +18,9 @@ import { toast } from "react-toastify";
 import { updateProfile } from "../../action/fb_database";
 import { async } from "@firebase/util";
 import { uploadProfileImg } from "../../action/fb_storage";
+import { retrieveLoginUser } from "../../redux/reducers/loginReducer";
 
 const EditProfileBox = () => {
-  const { id } = useParams();
   const [UserInfo, setUserInfo] = useState({
     name: "loading...",
     username: "loading...",
@@ -29,19 +30,22 @@ const EditProfileBox = () => {
     profile_picture:
       "https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png",
   });
+  const dispatch = useDispatch();
+  const userLoginData = useSelector((state) => {
+    return state.userLoginReducer.loginUser;
+  });
 
-  const handleGetUser = async () => {
-    let resp = await getUserById(id);
-
+  const handleGetUser = () => {
     setUserInfo({
-      id: resp[0].id,
-      name: resp[0].data.name,
-      username: resp[0].data.username,
-      email: resp[0].data.email,
-      city: resp[0].data.city,
-      social_media: resp[0].data.social_media,
-      profile_picture: resp[0].data.profile_picture,
+      id: userLoginData[0].id,
+      name: userLoginData[0].data.name,
+      username: userLoginData[0].data.username,
+      email: userLoginData[0].data.email,
+      city: userLoginData[0].data.city,
+      social_media: userLoginData[0].data.social_media,
+      profile_picture: userLoginData[0].data.profile_picture,
     });
+    console.log(userLoginData)
   };
 
   const handleUpdate = async () => {
@@ -53,7 +57,7 @@ const EditProfileBox = () => {
       UserInfo.social_media,
       UserInfo.profile_picture
     );
-
+    dispatch(retrieveLoginUser(userLoginData[0].id))
     toast.success("update successfully");
   };
 
@@ -82,11 +86,12 @@ const EditProfileBox = () => {
       social_media: UserInfo.social_media,
       profile_picture: url,
     });
+    toast.success("picture has uploaded");
   };
 
   useEffect(() => {
     handleGetUser();
-  }, []);
+  }, [dispatch]);
 
   return (
     <section className="section-detail__game--history">
