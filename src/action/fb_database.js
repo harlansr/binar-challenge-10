@@ -9,7 +9,7 @@ const db = database;
 //write biodata
 
 export const registerUser = (id_player, name, username, email) => {
-  const dbRef = ref(db, `game_user`);
+  const dbRef = ref(db, `game_user/${id_player}`);
   const data = {
     id_player,
     name,
@@ -23,7 +23,7 @@ export const registerUser = (id_player, name, username, email) => {
     total_game: 0,
     player_rank: 0,
   };
-  push(dbRef, data);
+  set(dbRef, data);
 };
 // get all user
 export const retrieveAllUser = () => {
