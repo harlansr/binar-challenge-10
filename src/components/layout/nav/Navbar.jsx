@@ -11,20 +11,16 @@ import { useNavigate } from "react-router-dom";
 const Navbar = ({ bgColor, user, transparant = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const userLoginData = useSelector((state) => {
+    return state.userLoginReducer.loginUser;
+  });
 
-  const { user: userGame } = useSelector((state) => ({ ...state }));
-
-  let dispatch = useDispatch();
   let navigate = useNavigate();
   const toggleModal = () => {
     setShowModal((previousValue) => !previousValue);
   };
 
   const handleLogout = () => {
-    dispatch({
-      type: "LOGOUT",
-      payload: null,
-    });
     navigate("/");
     firebaseLogout();
   };
@@ -80,7 +76,10 @@ const Navbar = ({ bgColor, user, transparant = false }) => {
             {isLogin ? (
               <ul className="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                 <li className="nav-item">
-                  <a className="nav-link" href={`/profile/${userGame?.uid}`}>
+                  <a
+                    className="nav-link"
+                    href={`/profile/${userLoginData[0]?.data?.id_player}`}
+                  >
                     PROFILE
                   </a>
                 </li>
