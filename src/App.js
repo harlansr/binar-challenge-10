@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { authFirebase } from "./config/firebase";
 import { ToastContainer } from "react-toastify";
@@ -14,31 +15,25 @@ import Register from "./pages/register";
 import EditProfile from "./pages/EditProfile";
 import GameRPS from "./pages/games/rock_paper_scissors";
 import ForgotPassword from "./pages/ForgotPassword";
+import { retrieveLoginUser } from "./redux/reducers/loginReducer";
 
 function App() {
   const dispatch = useDispatch();
+  const userLoginData = useSelector((state) => {
+    return state.userLoginReducer.loginUser;
+  });
   // to check firebase auth state
   useEffect(() => {
     const unsubscribe = authFirebase.onAuthStateChanged(async (user) => {
       if (user) {
         const idTokenResult = await user.getIdTokenResult();
-        console.log("user", user);
-
-        const userGame = {
-          email: user.email,
-          uid: user.uid,
-          token: idTokenResult,
-        };
-
-        dispatch({
-          type: "LOGGED_IN_USER",
-          payload: userGame,
-        });
+        dispatch(retrieveLoginUser(user.uid));
       }
     });
     // cleanup
     return () => unsubscribe();
   }, [dispatch]);
+  console.log(userLoginData);
 
   return (
     <>

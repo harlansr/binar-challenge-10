@@ -16,11 +16,12 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const { user } = useSelector((state) => ({ ...state }));
-
+  const userLoginData = useSelector((state) => {
+    return state.userLoginReducer.loginUser;
+  });
   useEffect(() => {
-    if (user && user.token) navigate("/");
-  }, [user, navigate]);
+    if (userLoginData) navigate("/");
+  }, [userLoginData, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
