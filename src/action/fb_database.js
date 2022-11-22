@@ -106,6 +106,24 @@ export const updateScore = (id, total_score) => {
   update(dbRef, data);
 };
 
+//update total game
+export const updateTotalGame = (id, total_game) => {
+  const dbRef = ref(db, `game_user/${id}`);
+  const data = {
+    total_game,
+  };
+  update(dbRef, data);
+};
+
+//update player rank
+export const updatePlayerRank = (id, player_rank) => {
+  const dbRef = ref(db, `game_user/${id}`);
+  const data = {
+    player_rank,
+  };
+  update(dbRef, data);
+};
+
 //update profile photo
 export const updateProfileImg = (id, profile_picture) => {
   const dbRef = ref(db, `game_user/${id}`);
@@ -216,6 +234,7 @@ export const playerRank = async (id) => {
     return b.score - a.score;
   });
   const rank = tempSort.findIndex((x) => x.id_player === id);
+  updatePlayerRank(id,rank+1)
   return rank + 1;
 };
 // total game per user
@@ -233,6 +252,6 @@ export const totalGameByUser = async (id) => {
       game_list.push(e.data.game_id);
     }
   });
-
+  updateTotalGame(id,game_list.length)
   return game_list.length;
 };
