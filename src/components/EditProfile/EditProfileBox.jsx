@@ -31,6 +31,7 @@ const EditProfileBox = () => {
       "https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png",
   });
   const dispatch = useDispatch();
+  
   const userLoginData = useSelector((state) => {
     return state.userLoginReducer.loginUser;
   });
@@ -45,7 +46,7 @@ const EditProfileBox = () => {
       social_media: userLoginData[0].data.social_media,
       profile_picture: userLoginData[0].data.profile_picture,
     });
-    console.log(userLoginData)
+    console.log('handle get user',userLoginData)
   };
 
   const handleUpdate = async () => {
@@ -57,8 +58,9 @@ const EditProfileBox = () => {
       UserInfo.social_media,
       UserInfo.profile_picture
     );
-    dispatch(retrieveLoginUser(userLoginData[0].id))
+    dispatch(retrieveLoginUser(UserInfo.id))
     toast.success("update successfully");
+    console.log('handle update',userLoginData)
   };
 
   const InputEvent = (event) => {

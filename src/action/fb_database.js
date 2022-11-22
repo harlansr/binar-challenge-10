@@ -63,15 +63,17 @@ export const retrieveAllScore = () => {
 
 //read one biodata
 export const getUserById = async (id) => {
-  const selected = [];
-  const resp = await retrieveAllUser();
-  resp.forEach((e) => {
-    if (e.data.id_player === id) {
-      selected.push(e);
-    }
+  return new Promise((resolve, reject) => {
+    const dbRef = ref(db, `game_user/${id}`);
+    onValue(dbRef, (data) => {
+      const value = []
+      value.push({
+        id:id,
+        data: data.val()
+      })
+      resolve(value);
+    });
   });
-
-  return selected;
 };
 
 //edit profile
