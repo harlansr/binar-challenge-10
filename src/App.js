@@ -33,7 +33,9 @@ function App() {
     // cleanup
     return () => unsubscribe();
   }, [dispatch]);
-  console.log(userLoginData);
+
+  console.log('track redux data APP', userLoginData);
+
 
   return (
     <>

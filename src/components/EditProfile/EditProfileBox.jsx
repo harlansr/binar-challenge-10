@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Card,
   InputGroup,
@@ -17,44 +18,64 @@ import { toast } from "react-toastify";
 import { updateProfile } from "../../action/fb_database";
 import { async } from "@firebase/util";
 import { uploadProfileImg } from "../../action/fb_storage";
+import { retrieveLoginUser } from "../../redux/reducers/loginReducer";
 
 const EditProfileBox = () => {
-  const { id } = useParams();
   const [UserInfo, setUserInfo] = useState({
     name: "loading...",
     username: "loading...",
     email: "loading...",
     city: "loading...",
     social_media: "loading...",
-    profile_picture:
-      "https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png",
+    profile_picture:"https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png",
   });
 
-  const handleGetUser = async () => {
-    let resp = await getUserById(id);
+  const [imgTemp, setImgTemp] = useState()
 
+  const dispatch = useDispatch();
+  
+  const userLoginData = useSelector((state) => {
+    return state.userLoginReducer.loginUser;
+  });
+
+  const handleGetUser = () => {
     setUserInfo({
-      id: resp[0].id,
-      name: resp[0].data.name,
-      username: resp[0].data.username,
-      email: resp[0].data.email,
-      city: resp[0].data.city,
-      social_media: resp[0].data.social_media,
-      profile_picture: resp[0].data.profile_picture,
+      id: userLoginData[0].id,
+      name: userLoginData[0].data.name,
+      username: userLoginData[0].data.username,
+      email: userLoginData[0].data.email,
+      city: userLoginData[0].data.city,
+      social_media: userLoginData[0].data.social_media,
+      profile_picture: userLoginData[0].data.profile_picture,
     });
   };
 
   const handleUpdate = async () => {
-    await updateProfile(
-      UserInfo.id,
-      UserInfo.name,
-      UserInfo.username,
-      UserInfo.city,
-      UserInfo.social_media,
-      UserInfo.profile_picture
-    );
-
-    toast.success("update successfully");
+    if(imgTemp){
+      const url = await uploadProfileImg(imgTemp);
+      await updateProfile(
+        UserInfo.id,
+        UserInfo.name,
+        UserInfo.username,
+        UserInfo.city,
+        UserInfo.social_media,
+        url
+      );
+      dispatch(retrieveLoginUser(UserInfo.id))
+      toast.success("update successfully");
+    }else{
+      await updateProfile(
+        UserInfo.id,
+        UserInfo.name,
+        UserInfo.username,
+        UserInfo.city,
+        UserInfo.social_media,
+        UserInfo.profile_picture
+      );
+      dispatch(retrieveLoginUser(UserInfo.id))
+      toast.success("update successfully");
+    }
+    
   };
 
   const InputEvent = (event) => {
@@ -70,23 +91,29 @@ const EditProfileBox = () => {
 
   const InputFile = async (event) => {
     let file = event.target.files[0];
-    console.log("test file", file);
-    let url = await uploadProfileImg(file);
-    console.log("test url", url);
-    setUserInfo({
-      id: UserInfo.id,
-      name: UserInfo.name,
-      username: UserInfo.username,
-      email: UserInfo.email,
-      city: UserInfo.city,
-      social_media: UserInfo.social_media,
-      profile_picture: url,
-    });
+    setImgTemp(file)
+    if(file){
+      const reader = new FileReader()
+      reader.onload = ( ) =>{
+        if (reader.readyState === 2){
+          setUserInfo({
+            id: UserInfo.id,
+            name: UserInfo.name,
+            username: UserInfo.username,
+            email: UserInfo.email,
+            city: UserInfo.city,
+            social_media: UserInfo.social_media,
+            profile_picture: reader.result,
+            });
+        }
+      }
+    reader.readAsDataURL(file)
+    } 
   };
 
   useEffect(() => {
     handleGetUser();
-  }, []);
+  }, [dispatch]);
 
   return (
     <section className="section-detail__game--history">
@@ -99,7 +126,7 @@ const EditProfileBox = () => {
         {/* Game Leader Board Top */}
         <div style={{ backgroundColor: "#464343" }}>
           <Card.Header className="detail-game__history--header">
-            {UserInfo.name}'s Profile
+            {userLoginData[0].data.name}'s Profile
           </Card.Header>
         </div>
 

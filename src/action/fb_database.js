@@ -9,7 +9,7 @@ const db = database;
 //write biodata
 
 export const registerUser = (id_player, name, username, email) => {
-  const dbRef = ref(db, `game_user`);
+  const dbRef = ref(db, `game_user/${id_player}`);
   const data = {
     id_player,
     name,
@@ -23,7 +23,7 @@ export const registerUser = (id_player, name, username, email) => {
     total_game: 0,
     player_rank: 0,
   };
-  push(dbRef, data);
+  set(dbRef, data);
 };
 // get all user
 export const retrieveAllUser = () => {
@@ -63,15 +63,17 @@ export const retrieveAllScore = () => {
 
 //read one biodata
 export const getUserById = async (id) => {
-  const selected = [];
-  const resp = await retrieveAllUser();
-  resp.forEach((e) => {
-    if (e.data.id_player === id) {
-      selected.push(e);
-    }
+  return new Promise((resolve, reject) => {
+    const dbRef = ref(db, `game_user/${id}`);
+    onValue(dbRef, (data) => {
+      const value = []
+      value.push({
+        id:id,
+        data: data.val()
+      })
+      resolve(value);
+    });
   });
-
-  return selected;
 };
 
 //edit profile
@@ -100,6 +102,24 @@ export const updateScore = (id, total_score) => {
   const dbRef = ref(db, `game_user/${id}`);
   const data = {
     total_score,
+  };
+  update(dbRef, data);
+};
+
+//update total game
+export const updateTotalGame = (id, total_game) => {
+  const dbRef = ref(db, `game_user/${id}`);
+  const data = {
+    total_game,
+  };
+  update(dbRef, data);
+};
+
+//update player rank
+export const updatePlayerRank = (id, player_rank) => {
+  const dbRef = ref(db, `game_user/${id}`);
+  const data = {
+    player_rank,
   };
   update(dbRef, data);
 };
@@ -214,6 +234,7 @@ export const playerRank = async (id) => {
     return b.score - a.score;
   });
   const rank = tempSort.findIndex((x) => x.id_player === id);
+  updatePlayerRank(id,rank+1)
   return rank + 1;
 };
 // total game per user
@@ -231,6 +252,6 @@ export const totalGameByUser = async (id) => {
       game_list.push(e.data.game_id);
     }
   });
-
+  updateTotalGame(id,game_list.length)
   return game_list.length;
 };
