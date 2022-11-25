@@ -19,6 +19,8 @@ import { updateProfile } from "../../action/fb_database";
 import { async } from "@firebase/util";
 import { uploadProfileImg } from "../../action/fb_storage";
 import { retrieveLoginUser } from "../../redux/reducers/loginReducer";
+import LoadingButton from "../layout/button/LoadingButton";
+import { loadingAction } from "../../redux/reducers/loadingReducer";
 
 const EditProfileBox = () => {
   const [UserInfo, setUserInfo] = useState({
@@ -52,6 +54,7 @@ const EditProfileBox = () => {
 
   const handleUpdate = async () => {
     if(imgTemp){
+      dispatch(loadingAction.toggleLoadingStatus())
       const url = await uploadProfileImg(imgTemp);
       await updateProfile(
         UserInfo.id,
@@ -63,7 +66,9 @@ const EditProfileBox = () => {
       );
       dispatch(retrieveLoginUser(UserInfo.id))
       toast.success("update successfully");
+      dispatch(loadingAction.toggleLoadingStatus())
     }else{
+      dispatch(loadingAction.toggleLoadingStatus())
       await updateProfile(
         UserInfo.id,
         UserInfo.name,
@@ -74,6 +79,7 @@ const EditProfileBox = () => {
       );
       dispatch(retrieveLoginUser(UserInfo.id))
       toast.success("update successfully");
+      dispatch(loadingAction.toggleLoadingStatus())
     }
     
   };
@@ -207,9 +213,7 @@ const EditProfileBox = () => {
                   </Form.Group>
                 </div>
                 <div className="tombolUpdate">
-                  <Button variant="success" onClick={() => handleUpdate()}>
-                    UPDATE
-                  </Button>
+                  <LoadingButton onClick={() => handleUpdate()} title="UPDATE"/>
                 </div>
               </Col>
             </Row>
