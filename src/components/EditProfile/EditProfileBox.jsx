@@ -6,14 +6,11 @@ import {
   Form,
   Row,
   Col,
-  Container,
-  Button,
+  Container
 } from "react-bootstrap";
 import "./EditProfileBox.css";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getUserById } from "../../action/fb_database";
-import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { updateProfile } from "../../action/fb_database";
 import { async } from "@firebase/util";
@@ -39,7 +36,9 @@ const EditProfileBox = () => {
   const userLoginData = useSelector((state) => {
     return state.userLoginReducer.loginUser;
   });
-
+  const tombol = useSelector((state)=>{
+    return state.loadingReducer.loadingStatus;
+  })
   const handleGetUser = () => {
     setUserInfo({
       id: userLoginData[0].id,
@@ -53,8 +52,8 @@ const EditProfileBox = () => {
   };
 
   const handleUpdate = async () => {
+    dispatch(loadingAction.toggleLoadingStatus())
     if(imgTemp){
-      dispatch(loadingAction.toggleLoadingStatus())
       const url = await uploadProfileImg(imgTemp);
       await updateProfile(
         UserInfo.id,
@@ -66,9 +65,10 @@ const EditProfileBox = () => {
       );
       dispatch(retrieveLoginUser(UserInfo.id))
       toast.success("update successfully");
-      dispatch(loadingAction.toggleLoadingStatus())
-    }else{
-      dispatch(loadingAction.toggleLoadingStatus())
+    }
+    
+    if(imgTemp === undefined){
+      console.log('masuk')
       await updateProfile(
         UserInfo.id,
         UserInfo.name,
@@ -79,9 +79,8 @@ const EditProfileBox = () => {
       );
       dispatch(retrieveLoginUser(UserInfo.id))
       toast.success("update successfully");
-      dispatch(loadingAction.toggleLoadingStatus())
     }
-    
+    dispatch(loadingAction.toggleLoadingStatus())
   };
 
   const InputEvent = (event) => {
@@ -118,7 +117,7 @@ const EditProfileBox = () => {
   };
 
   useEffect(() => {
-    handleGetUser();
+    handleGetUser();;
   }, [dispatch]);
 
   return (
