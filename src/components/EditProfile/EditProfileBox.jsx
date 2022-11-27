@@ -1,13 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Card,
-  InputGroup,
-  Form,
-  Row,
-  Col,
-  Container
-} from "react-bootstrap";
+import { Card, InputGroup, Form, Row, Col, Container } from "react-bootstrap";
 import "./EditProfileBox.css";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -26,34 +19,35 @@ const EditProfileBox = () => {
     email: "loading...",
     city: "loading...",
     social_media: "loading...",
-    profile_picture:"https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png",
+    profile_picture:
+      "https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png",
   });
 
-  const [imgTemp, setImgTemp] = useState()
+  const [imgTemp, setImgTemp] = useState();
 
   const dispatch = useDispatch();
-  
+
   const userLoginData = useSelector((state) => {
     return state.userLoginReducer.loginUser;
   });
-  const tombol = useSelector((state)=>{
+  const tombol = useSelector((state) => {
     return state.loadingReducer.loadingStatus;
-  })
+  });
   const handleGetUser = () => {
     setUserInfo({
-      id: userLoginData[0].id,
-      name: userLoginData[0].data.name,
-      username: userLoginData[0].data.username,
-      email: userLoginData[0].data.email,
-      city: userLoginData[0].data.city,
-      social_media: userLoginData[0].data.social_media,
-      profile_picture: userLoginData[0].data.profile_picture,
+      id: userLoginData[0]?.id,
+      name: userLoginData[0]?.data?.name,
+      username: userLoginData[0]?.data?.username,
+      email: userLoginData[0]?.data?.email,
+      city: userLoginData[0]?.data?.city,
+      social_media: userLoginData[0]?.data?.social_media,
+      profile_picture: userLoginData[0]?.data?.profile_picture,
     });
   };
 
   const handleUpdate = async () => {
-    dispatch(loadingAction.toggleLoadingStatus())
-    if(imgTemp){
+    dispatch(loadingAction.toggleLoadingStatus());
+    if (imgTemp) {
       const url = await uploadProfileImg(imgTemp);
       await updateProfile(
         UserInfo.id,
@@ -63,12 +57,12 @@ const EditProfileBox = () => {
         UserInfo.social_media,
         url
       );
-      dispatch(retrieveLoginUser(UserInfo.id))
+      dispatch(retrieveLoginUser(UserInfo.id));
       toast.success("update successfully");
     }
-    
-    if(imgTemp === undefined){
-      console.log('masuk')
+
+    if (imgTemp === undefined) {
+      console.log("masuk");
       await updateProfile(
         UserInfo.id,
         UserInfo.name,
@@ -77,10 +71,10 @@ const EditProfileBox = () => {
         UserInfo.social_media,
         UserInfo.profile_picture
       );
-      dispatch(retrieveLoginUser(UserInfo.id))
+      dispatch(retrieveLoginUser(UserInfo.id));
       toast.success("update successfully");
     }
-    dispatch(loadingAction.toggleLoadingStatus())
+    dispatch(loadingAction.toggleLoadingStatus());
   };
 
   const InputEvent = (event) => {
@@ -96,11 +90,11 @@ const EditProfileBox = () => {
 
   const InputFile = async (event) => {
     let file = event.target.files[0];
-    setImgTemp(file)
-    if(file){
-      const reader = new FileReader()
-      reader.onload = ( ) =>{
-        if (reader.readyState === 2){
+    setImgTemp(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.readyState === 2) {
           setUserInfo({
             id: UserInfo.id,
             name: UserInfo.name,
@@ -109,16 +103,16 @@ const EditProfileBox = () => {
             city: UserInfo.city,
             social_media: UserInfo.social_media,
             profile_picture: reader.result,
-            });
+          });
         }
-      }
-    reader.readAsDataURL(file)
-    } 
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   useEffect(() => {
-    handleGetUser();;
-  }, [dispatch]);
+    handleGetUser();
+  }, [userLoginData]);
 
   return (
     <section className="section-detail__game--history">
@@ -131,7 +125,7 @@ const EditProfileBox = () => {
         {/* Game Leader Board Top */}
         <div style={{ backgroundColor: "#464343" }}>
           <Card.Header className="detail-game__history--header">
-            {userLoginData[0].data.name}'s Profile
+            {userLoginData[0]?.data?.name}'s Profile
           </Card.Header>
         </div>
 
@@ -212,7 +206,10 @@ const EditProfileBox = () => {
                   </Form.Group>
                 </div>
                 <div className="tombolUpdate">
-                  <LoadingButton onClick={() => handleUpdate()} title="UPDATE"/>
+                  <LoadingButton
+                    onClick={() => handleUpdate()}
+                    title="UPDATE"
+                  />
                 </div>
               </Col>
             </Row>
