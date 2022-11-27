@@ -3,14 +3,15 @@ import logo from "../../../assets/images/echamp-white.png";
 import Login from "../../login/login";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onAuthStateChanged } from "firebase/auth";
-import { authFirebase } from "../../../config/firebase";
 import { checkDataLogin, firebaseLogout } from "../../../action/autentication";
 import { useNavigate } from "react-router-dom";
+import { userLoginAction } from "../../../redux/reducers/loginReducer";
 
 const Navbar = ({ bgColor, user, transparant = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+
+  const dispatch = useDispatch();
   const userLoginData = useSelector((state) => {
     return state.userLoginReducer.loginUser;
   });
@@ -22,6 +23,7 @@ const Navbar = ({ bgColor, user, transparant = false }) => {
 
   const handleLogout = () => {
     navigate("/");
+    dispatch(userLoginAction.logoutUser());
     firebaseLogout();
   };
   useEffect(() => {
@@ -74,32 +76,62 @@ const Navbar = ({ bgColor, user, transparant = false }) => {
               </li>
             </ul>
             {isLogin ? (
-              <ul className="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li className="nav-item">
+              <ul className="d-flex align-items-center navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <li className="nav-item dropdown">
                   <a
-                    className="nav-link"
-                    href={`/profile/${userLoginData[0]?.data?.id_player}`}
-                  >
-                    PROFILE
-                  </a>
+                    className="nav-link dropdown-toggle"
+                    data-toggle="dropdown"
+                    href="#"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  ></a>
+                  <div className="dropdown-menu" style={{ right: "10px" }}>
+                    <p className="dropdown-item">
+                      {userLoginData[0]?.data?.name}
+                    </p>
+                    <p className="dropdown-item">
+                      Total Score: {userLoginData[0]?.data?.total_score}
+                    </p>
+                    <div className="dropdown-divider"></div>
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (window.confirm("Are you sure to Logout?")) {
+                          handleLogout();
+                        }
+                      }}
+                    >
+                      LOGOUT
+                    </a>
+                  </div>
                 </li>
                 <li className="nav-item">
-                  {/* <a className="nav-link" href="#" onClick={handleLogout}> */}
-                  <a
-                    className="nav-link"
-                    href="#"
-                    onClick={() => {
-                      if (window.confirm("Are you sure to Logout?")) {
-                        handleLogout();
+                  <a className="nav-link" href={`/profile`}>
+                    <img
+                      src={
+                        userLoginData[0]?.data?.profile_picture
+                          ? userLoginData[0]?.data?.profile_picture
+                          : "https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png"
                       }
-                    }}
-                  >
-                    LOGOUT
+                      className="rounded-circle"
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                      }}
+                      alt="..."
+                    />
                   </a>
                 </li>
               </ul>
             ) : (
               <ul className="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <li className="nav-item">
+                  <a className="nav-link" href="/register">
+                    REGISTER
+                  </a>
+                </li>
                 <li className="nav-item">
                   <a className="nav-link" href="#" onClick={toggleModal}>
                     LOGIN

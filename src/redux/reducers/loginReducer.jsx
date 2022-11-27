@@ -12,7 +12,11 @@ export const retrieveLoginUser = createAsyncThunk(
 const userLoginSlice = createSlice({
   name: "loginUser",
   initialState: { loginUser: [] },
-  reducers: {},
+  reducers: {
+    logoutUser(state, action) {
+      state.loginUser = [];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(retrieveLoginUser.fulfilled, (state, action) => {
       state.loginUser = action.payload;
