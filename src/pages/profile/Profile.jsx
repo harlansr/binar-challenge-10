@@ -15,7 +15,6 @@ const Profile = () => {
     async function initData() {
       const userDataById = await getUserById(playerId);
       const userGameHistoryById = await historyByUser(playerId);
-
       setUserDataById(userDataById[0]);
       setUserGameHistory(userGameHistoryById);
     }

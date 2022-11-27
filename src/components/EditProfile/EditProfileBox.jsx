@@ -28,7 +28,6 @@ const EditProfileBox = () => {
     social_media: "loading...",
     profile_picture:"https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png",
   });
-
   const [imgTemp, setImgTemp] = useState()
 
   const dispatch = useDispatch();
@@ -36,18 +35,16 @@ const EditProfileBox = () => {
   const userLoginData = useSelector((state) => {
     return state.userLoginReducer.loginUser;
   });
-  const tombol = useSelector((state)=>{
-    return state.loadingReducer.loadingStatus;
-  })
+
   const handleGetUser = () => {
     setUserInfo({
-      id: userLoginData[0].id,
-      name: userLoginData[0].data.name,
-      username: userLoginData[0].data.username,
-      email: userLoginData[0].data.email,
-      city: userLoginData[0].data.city,
-      social_media: userLoginData[0].data.social_media,
-      profile_picture: userLoginData[0].data.profile_picture,
+      id: userLoginData[0]?.id,
+      name: userLoginData[0]?.data?.name,
+      username: userLoginData[0]?.data?.username,
+      email: userLoginData[0]?.data?.email,
+      city: userLoginData[0]?.data?.city,
+      social_media: userLoginData[0]?.data?.social_media,
+      profile_picture: userLoginData[0]?.data?.profile_picture,
     });
   };
 
@@ -117,8 +114,8 @@ const EditProfileBox = () => {
   };
 
   useEffect(() => {
-    handleGetUser();;
-  }, [dispatch]);
+    handleGetUser();
+  }, [userLoginData]);
 
   return (
     <section className="section-detail__game--history">
@@ -131,7 +128,7 @@ const EditProfileBox = () => {
         {/* Game Leader Board Top */}
         <div style={{ backgroundColor: "#464343" }}>
           <Card.Header className="detail-game__history--header">
-            {userLoginData[0].data.name}'s Profile
+            {userLoginData[0]?.data?.name}'s Profile
           </Card.Header>
         </div>
 
