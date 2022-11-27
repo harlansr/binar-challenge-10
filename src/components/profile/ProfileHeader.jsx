@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,37 +8,20 @@ import {
   totalPointByUser,
 } from "../../action/fb_database";
 import "./ProfileHeader.css";
+import { retrieveLoginUser } from "../../redux/reducers/loginReducer";
 
-const ProfileHeader = ({ user, playerId }) => {
-  const [totalGame, setTotalGame] = useState("0");
-  const [totalPoint, setTotalPoint] = useState("0");
-  const [playerRankByUser, setPlayerRankByUser] = useState("0");
+const ProfileHeader = () => {
+  const userLoginData = useSelector((state) => {
+    return state.userLoginReducer.loginUser;
+  });
   let navigate = useNavigate();
+
   const editHandler = () => {
-    navigate(`/edit_profile/${user?.data?.id_player}`);
+    navigate(`/edit_profile/${userLoginData[0]?.data.id_player}`);
   };
-
   const socialMediaHandler = () => {
-    window.location.href = user.data.social_media;
+    window.location.href = userLoginData[0]?.data.social_media;
   };
-
-  useEffect(() => {
-    async function initData() {
-      try {
-        const totalGameUser = await totalGameByUser(playerId);
-        const totalPointUser = await totalPointByUser(playerId);
-        const playerRankUser = await playerRank(playerId);
-
-        setTotalGame(totalGameUser);
-        setTotalPoint(totalPointUser);
-        setPlayerRankByUser(playerRankUser);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    initData();
-  }, [playerId]);
 
   return (
     <section className="section-profile__header d-flex">
@@ -49,8 +33,8 @@ const ProfileHeader = ({ user, playerId }) => {
         <Card.Img
           className="profile-header__left--img"
           src={
-            user?.data?.profile_picture
-              ? user?.data?.profile_picture
+            userLoginData[0]?.data?.profile_picture
+              ? userLoginData[0]?.data?.profile_picture
               : "https://mir-s3-cdn-cf.behance.net/project_modules/fs/e1fd5442419075.57cc3f77ed8c7.png"
           }
           alt="user profile"
@@ -61,13 +45,13 @@ const ProfileHeader = ({ user, playerId }) => {
           <Card.Header className="profile-header__rt">
             <div>
               <Card.Title className="profile-header__rt--title">
-                {user?.data?.name}
+                {userLoginData[0]?.data?.name}
               </Card.Title>
               <Card.Text className="profile-header__rt--text">
-                {user?.data?.username}
+                {userLoginData[0]?.data?.username}
               </Card.Text>
               <Card.Text className="profile-header__rt--text">
-                {user?.data?.city}
+                {userLoginData[0]?.data?.city}
               </Card.Text>
             </div>
 
@@ -88,7 +72,7 @@ const ProfileHeader = ({ user, playerId }) => {
             <div className="profile-header__rb">
               <div>
                 <Card.Title className="profile-header__rb--title">
-                  {totalGame}
+                  {userLoginData[0]?.data?.total_game}
                 </Card.Title>
                 <Card.Text className="profile-header__rb--text">
                   TOTAL GAME
@@ -96,7 +80,7 @@ const ProfileHeader = ({ user, playerId }) => {
               </div>
               <div>
                 <Card.Title className="profile-header__rb--title">
-                  {totalPoint}
+                  {userLoginData[0]?.data?.total_score}
                 </Card.Title>
                 <Card.Text className="profile-header__rb--text">
                   TOTAL POINT
@@ -104,7 +88,7 @@ const ProfileHeader = ({ user, playerId }) => {
               </div>
               <div>
                 <Card.Title className="profile-header__rb--title">
-                  {playerRankByUser}
+                  {userLoginData[0]?.data?.total_score}
                 </Card.Title>
                 <Card.Text className="profile-header__rb--text">
                   PLAYER RANK
