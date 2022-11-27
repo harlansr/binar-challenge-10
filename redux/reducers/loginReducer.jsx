@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUserById } from "../../action/fb_database";
+import { getUserById } from "../../actions/fb_database";
 
 export const retrieveLoginUser = createAsyncThunk(
   "loginUser/retrieveLoginUser",

@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userLoginSlice from "../reducers/loginReducer";
 import loadingSlice from "../reducers/loadingReducer";
+import { createWrapper } from "next-redux-wrapper";
 
 const allReducers = combineReducers({
   userLoginReducer: userLoginSlice.reducer,

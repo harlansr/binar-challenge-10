@@ -2,22 +2,19 @@ import { Component } from "react";
 import { Form, Container, Card, CardGroup, Row, Col } from "react-bootstrap";
 import { authFirebase, database } from "../config/firebase";
 
-import "../assets/pages/home/styles.css";
-import "../assets/pages/home/scripts.js";
+import "../utils/home/scripts";
 
-import logo from "../assets/images/echamp-white.png";
-import btnSlide from "../assets/images/scroll_down.svg";
-import GameCard from "../components/home/game_card";
-import Slideshow from "../components/home/slideshow";
-import Footer from "../components/layout/footer/Footer";
+import GameCard from "../components/Home/game_card";
+import Slideshow from "../components/Home/slideshow";
+import Footer from "../components/Layout/Footer/Footer";
 import {
   getLeaderBoard,
   retrieveAllGames,
   retrieveAllSlideshow,
   seederGame,
-} from "../action/games";
-import Navbar from "../components/layout/nav/Navbar";
-import Leaderboard from "../components/home/leaderboard";
+} from "../actions/games";
+import Navbar from "../components/Layout/Nav/Navbar";
+import Leaderboard from "../components/Home/leaderboard";
 
 class Home extends Component {
   state = {

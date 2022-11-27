@@ -1,10 +1,10 @@
 import React from "react";
-import logo from "../../../assets/images/echamp-white.png";
-import Login from "../../login/login";
+import logo from "../../../public/assets/echamp-white.png";
+import Login from "../../Login/Login";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkDataLogin, firebaseLogout } from "../../../action/autentication";
-import { useNavigate } from "react-router-dom";
+import { checkDataLogin, firebaseLogout } from "../../../actions/autentication";
+import { useRouter } from "next/router";
 import { userLoginAction } from "../../../redux/reducers/loginReducer";
 
 const Navbar = ({ bgColor, user, transparant = false }) => {
@@ -16,13 +16,13 @@ const Navbar = ({ bgColor, user, transparant = false }) => {
     return state.userLoginReducer.loginUser;
   });
 
-  let navigate = useNavigate();
+  const router = useRouter();
   const toggleModal = () => {
     setShowModal((previousValue) => !previousValue);
   };
 
   const handleLogout = () => {
-    navigate("/");
+    router.push("/");
     dispatch(userLoginAction.logoutUser());
     firebaseLogout();
   };
