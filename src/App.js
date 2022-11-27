@@ -26,7 +26,6 @@ function App() {
   useEffect(() => {
     const unsubscribe = authFirebase.onAuthStateChanged(async (user) => {
       if (user) {
-        const idTokenResult = await user.getIdTokenResult();
         dispatch(retrieveLoginUser(user.uid));
       }
     });
@@ -34,8 +33,7 @@ function App() {
     return () => unsubscribe();
   }, [dispatch]);
 
-  console.log('track redux data APP', userLoginData);
-
+  console.log("track redux data APP", userLoginData);
 
   return (
     <>
@@ -45,7 +43,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/game/spacewar" element={<GameSpaceWar />} />
           <Route path="/game/game_rps" element={<GameRPS />} />
-          <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/detail/:id" element={<GameDetail />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot/password" element={<ForgotPassword />} />
