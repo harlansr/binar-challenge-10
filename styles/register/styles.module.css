@@ -1,4 +1,4 @@
-.img_a {
+.imgA {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,7 +6,7 @@
   padding-bottom: 32px;
 }
 
-.img_logo {
+.imgLogo {
   height: 43px;
 }
 
