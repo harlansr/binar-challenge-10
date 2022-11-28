@@ -5,30 +5,34 @@ import { useDispatch } from "react-redux";
 import { authFirebase } from "../config/firebase";
 import { retrieveLoginUser } from "../redux/reducers/loginReducer";
 import "react-toastify/dist/ReactToastify.css";
-import myStore from "../redux/store";
+import myStore, { wrapper } from "../redux/store";
+
 import "../styles/globals.css";
 
-function MyApp({ Component, ...pageProps }) {
-  // const dispatch = useDispatch();
-  // // to check firebase auth state
-  // useEffect(() => {
-  //   const unsubscribe = authFirebase.onAuthStateChanged(async (user) => {
-  //     if (user) {
-  //       dispatch(retrieveLoginUser(user.uid));
-  //     }
-  //   });
-  //   // cleanup
-  //   return () => unsubscribe();
-  // }, [dispatch]);
+function MyApp({ Component, ...rest }) {
+  const dispatch = useDispatch();
+  const userLoginData = useSelector((state) => {
+    return state.userLoginReducer.loginUser;
+  });
+  const { store, props } = wrapper.useWrappedStore(rest);
 
-  // console.log("track redux data APP", userLoginData);
+  // to check firebase auth state
+  useEffect(() => {
+    const unsubscribe = authFirebase.onAuthStateChanged(async (user) => {
+      if (user) {
+        dispatch(retrieveLoginUser(user.uid));
+      }
+    });
+    // cleanup
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  console.log(userLoginData);
+
   return (
     <>
-      <Provider store={myStore}>
-        <Component {...pageProps} />
-      </Provider>
+      <Component {...props.pageProps} />
     </>
   );
 }
-
-export default MyApp;
+export default wrapper.withRedux(MyApp);

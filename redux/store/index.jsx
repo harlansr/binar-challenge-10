@@ -8,8 +8,10 @@ const allReducers = combineReducers({
   loadingReducer: loadingSlice.reducer,
 });
 
-const myStore = configureStore({
-  reducer: allReducers,
-});
+const myStore = () =>
+  configureStore({
+    reducer: allReducers,
+  });
 
+export const wrapper = createWrapper(myStore, { debug: true });
 export default myStore;
